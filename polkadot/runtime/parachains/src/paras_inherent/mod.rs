@@ -41,7 +41,7 @@ use frame_support::{
 	traits::Randomness,
 };
 use frame_system::pallet_prelude::*;
-use pallet_babe::{self, ParentBlockRandomness};
+// use pallet_babe::{self, ParentBlockRandomness};
 use primitives::{
 	effective_minimum_backing_votes, vstaging::node_features::FeatureIndex, BackedCandidate,
 	CandidateHash, CandidateReceipt, CheckedDisputeStatementSet, CheckedMultiDisputeStatementSet,
@@ -121,7 +121,8 @@ pub mod pallet {
 	#[pallet::config]
 	#[pallet::disable_frame_system_supertrait_check]
 	pub trait Config:
-		inclusion::Config + scheduler::Config + initializer::Config + pallet_babe::Config
+		inclusion::Config + scheduler::Config + initializer::Config 
+		// + pallet_babe::Config
 	{
 		/// Weight information for extrinsics in this pallet.
 		type WeightInfo: WeightInfo;
@@ -1075,16 +1076,17 @@ fn compute_entropy<T: Config>(parent_hash: T::Hash) -> [u8; 32] {
 	// by the previous block, while for the block author this randomness was
 	// known 2 epochs ago. it is marginally better than using the parent block
 	// hash since it's harder to influence the VRF output than the block hash.
-	let vrf_random = ParentBlockRandomness::<T>::random(&CANDIDATE_SEED_SUBJECT[..]).0;
+	// todo random
+	// let vrf_random = ParentBlockRandomness::<T>::random(&CANDIDATE_SEED_SUBJECT[..]).0;
 	let mut entropy: [u8; 32] = CANDIDATE_SEED_SUBJECT;
-	if let Some(vrf_random) = vrf_random {
-		entropy.as_mut().copy_from_slice(vrf_random.as_ref());
-	} else {
-		// in case there is no VRF randomness present, we utilize the relay parent
-		// as seed, it's better than a static value.
-		log::warn!(target: LOG_TARGET, "ParentBlockRandomness did not provide entropy");
-		entropy.as_mut().copy_from_slice(parent_hash.as_ref());
-	}
+	// if let Some(vrf_random) = vrf_random {
+	// 	entropy.as_mut().copy_from_slice(vrf_random.as_ref());
+	// } else {
+	// 	// in case there is no VRF randomness present, we utilize the relay parent
+	// 	// as seed, it's better than a static value.
+	// 	log::warn!(target: LOG_TARGET, "ParentBlockRandomness did not provide entropy");
+	// 	entropy.as_mut().copy_from_slice(parent_hash.as_ref());
+	// }
 	entropy
 }
 
