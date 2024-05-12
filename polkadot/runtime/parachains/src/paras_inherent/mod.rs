@@ -1076,7 +1076,6 @@ fn compute_entropy<T: Config>(parent_hash: T::Hash) -> [u8; 32] {
 	// by the previous block, while for the block author this randomness was
 	// known 2 epochs ago. it is marginally better than using the parent block
 	// hash since it's harder to influence the VRF output than the block hash.
-	// todo random
 	// let vrf_random = ParentBlockRandomness::<T>::random(&CANDIDATE_SEED_SUBJECT[..]).0;
 	let mut entropy: [u8; 32] = CANDIDATE_SEED_SUBJECT;
 	// if let Some(vrf_random) = vrf_random {
@@ -1087,6 +1086,8 @@ fn compute_entropy<T: Config>(parent_hash: T::Hash) -> [u8; 32] {
 	// 	log::warn!(target: LOG_TARGET, "ParentBlockRandomness did not provide entropy");
 	// 	entropy.as_mut().copy_from_slice(parent_hash.as_ref());
 	// }
+	// Changed by nilx
+	entropy.as_mut().copy_from_slice(parent_hash.as_ref());
 	entropy
 }
 
